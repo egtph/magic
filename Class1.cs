@@ -1,8 +1,3 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 
@@ -14,7 +9,7 @@ namespace OutlookControl
         {
             Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
 
-            //Outlook.Folder DestFolder = (Folder)app.Session.GetFolderFromID(strFolderEntryID, strFolderStoreID);
+       
             Outlook.Folder DestFolder = app.Session.GetFolderFromID(strFolderEntryID, strFolderStoreID) as Outlook.Folder;
 
             Outlook.MailItem item = app.CreateItem(Outlook.OlItemType.olMailItem);
