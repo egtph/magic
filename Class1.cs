@@ -6,6 +6,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Mime;
+using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 
@@ -38,36 +39,43 @@ namespace OutlookControl
             int intFolderCount = 0;
             int intItemsCount = 0;
             string strFolderFound = "N";
-            Outlook.MAPIFolder fldrsource = app.GetNamespace("MAPI").Folders[0];
+            Outlook.MAPIFolder fldrsource = app.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolder‌​Inbox).Parent;
             string strEntryID = "";
             string strStoreId = "";
+            string strLevel = "";
 
             if (strMailbox.ToString().Trim() != "")
             {
+                strLevel = "1";
                 foreach (Outlook.MAPIFolder fldrmlbox in app.GetNamespace("MAPI").Folders)
                 {
                     if (fldrmlbox.Name.ToString().ToLower().Trim() == strMailbox.ToString().ToLower().Trim())
                     {
-                        
+                        strLevel = "2";
                         if (strFolder1.ToString().Trim() != "")
                         {
                             intFolderCount = fldrmlbox.Folders.Count;
                             if (intFolderCount > 0)
-                            { 
+                            {
+                                strLevel = "3";
                                 foreach (Outlook.MAPIFolder fldrlvl1 in fldrmlbox.Folders)
                                 {
                                     if (fldrlvl1.Name.ToString().ToLower().Trim() == strFolder1.ToString().ToLower().Trim())
                                     {
-
+                                        strLevel = "4";
                                         if (strFolder2.ToString().Trim() != "")
                                         {
+                                            strLevel = "5";
                                             intFolderCount = fldrlvl1.Folders.Count;
                                             if (intFolderCount > 0)
-                                            { 
-                                                foreach (Outlook.MAPIFolder fldrlvl2 in fldrmlbox.Folders)
+                                            {
+                                                strLevel = "6";
+                                                foreach (Outlook.MAPIFolder fldrlvl2 in fldrlvl1.Folders)
                                                 {
+                                                    strLevel = "7" + fldrlvl2.Name.ToString().ToLower().Trim();
                                                     if (fldrlvl2.Name.ToString().ToLower().Trim() == strFolder2.ToString().ToLower().Trim())
                                                     {
+                                                        strLevel = "8";
                                                         fldrsource = fldrlvl2;
                                                         strFolderFound = "Y";
                                                         break;
@@ -95,27 +103,27 @@ namespace OutlookControl
                     }
                 }
             }
-            
+
+            strLevel = "9";
             if (strFolderFound == "Y")
             {
                 intItemsCount = fldrsource.Items.Count;
-                
+
                 if (intItemsCount > 0)   
                 {
-                    for (int i = 0; i <= intItemsCount; i++)
+                    
+                    foreach (Outlook.MailItem themailitem in fldrsource.Items)
                     {
-                        if (fldrsource.Items[i] is Outlook.MailItem)
-                        { 
-                            fldrsource.Items[i].SaveAs(strFileTarget, Outlook.OlSaveAsType.olMSG);
-                            strEntryID = fldrsource.Items[i].EntryID;
-                            strStoreId = fldrsource.Items[i].Parent.StoreID;
-                            break;
-                        }
+                        themailitem.SaveAs(strFileTarget, Outlook.OlSaveAsType.olMSG);
+                        strEntryID = themailitem.EntryID;
+                        strStoreId = themailitem.Parent.StoreID;
+                        break;
                     }
                 }
             }
-            
-            return "" + strEntryID + "|xxx|" + strStoreId;
+
+            return "" + strEntryID + "|xxx|" + strStoreId + "" ;
+
         }
     }
 }
