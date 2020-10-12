@@ -1,13 +1,4 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-
-using System.Diagnostics;
-using System.IO;
-using System.Net.Mime;
-using System.Windows.Forms;
-using Outlook = Microsoft.Office.Interop.Outlook;
+﻿using Outlook = Microsoft.Office.Interop.Outlook;
 
 
 namespace OutlookControl
