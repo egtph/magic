@@ -142,10 +142,13 @@ namespace OutlookControl
                     
                     foreach (Outlook.MailItem themailitem in fldrsource.Items)
                     {
-                        themailitem.SaveAs(strFileTarget, Outlook.OlSaveAsType.olMSG);
-                        strEntryID = themailitem.EntryID;
-                        strStoreId = themailitem.Parent.StoreID;
-                        break;
+                        if ((themailitem as Outlook.MailItem) != null)
+                        { 
+                            themailitem.SaveAs(strFileTarget, Outlook.OlSaveAsType.olMSG);
+                            strEntryID = themailitem.EntryID;
+                            strStoreId = themailitem.Parent.StoreID;
+                            break;
+                        }
                     }
                 }
             }
