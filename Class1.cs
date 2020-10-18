@@ -1,9 +1,12 @@
 using Outlook = Microsoft.Office.Interop.Outlook;
+using System;
 
 namespace OutlookControl
 {
     public class emailsend
     {
+        [STAThread]
+
         public void ComposeEmail(string strTo, string strCC, string strSubject, string strHtmlBody, string strFolderEntryID, string strFolderStoreID)
         {
             Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
