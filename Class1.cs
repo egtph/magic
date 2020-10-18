@@ -338,6 +338,104 @@ namespace OutlookControl
             return "" + strFolderFound + "|xxx|" + intItemsCount.ToString()  + "";
         }
 
+        public static string MoveEmailToFolder(string strMailbox, string strFolder1, string strFolder2, string strFolder3, string strItemEntryID, string strItemStoreID)
+        {
+            Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
+            int intFolderCount = 0;
+            string strFolderFound = "N";
+            Outlook.MAPIFolder fldrsource = app.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolder‌​Inbox).Parent;
+            string strLevel = "";
+            string strMoved = "N";
+
+            if (strMailbox.ToString().Trim() != "")
+            {
+                strLevel = "1";
+                foreach (Outlook.MAPIFolder fldrmlbox in app.GetNamespace("MAPI").Folders)
+                {
+                    if (fldrmlbox.Name.ToString().ToLower().Trim() == strMailbox.ToString().ToLower().Trim())
+                    {
+                        strLevel = "2";
+                        if (strFolder1.ToString().Trim() != "")
+                        {
+                            intFolderCount = fldrmlbox.Folders.Count;
+                            if (intFolderCount > 0)
+                            {
+                                strLevel = "3";
+                                foreach (Outlook.MAPIFolder fldrlvl1 in fldrmlbox.Folders)
+                                {
+                                    if (fldrlvl1.Name.ToString().ToLower().Trim() == strFolder1.ToString().ToLower().Trim())
+                                    {
+                                        strLevel = "4";
+                                        if (strFolder2.ToString().Trim() != "")
+                                        {
+                                            strLevel = "5";
+                                            intFolderCount = fldrlvl1.Folders.Count;
+                                            if (intFolderCount > 0)
+                                            {
+                                                strLevel = "6";
+                                                foreach (Outlook.MAPIFolder fldrlvl2 in fldrlvl1.Folders)
+                                                {
+                                                    strLevel = "7" + fldrlvl2.Name.ToString().ToLower().Trim();
+                                                    if (fldrlvl2.Name.ToString().ToLower().Trim() == strFolder2.ToString().ToLower().Trim())
+                                                    {
+                                                        strLevel = "8";
+                                                        if (strFolder3.ToString().Trim() != "")
+                                                        {
+                                                            intFolderCount = fldrlvl2.Folders.Count;
+                                                            if (intFolderCount > 0)
+                                                            {
+                                                                foreach (Outlook.MAPIFolder fldrlvl3 in fldrlvl1.Folders)
+                                                                {
+                                                                    if (fldrlvl3.Name.ToString().ToLower().Trim() == strFolder3.ToString().ToLower().Trim())
+                                                                    {
+                                                                        fldrsource = fldrlvl3;
+                                                                        strFolderFound = "Y";
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            fldrsource = fldrlvl2;
+                                                            strFolderFound = "Y";
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            fldrsource = fldrlvl1;
+                                            strFolderFound = "Y";
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            fldrsource = fldrmlbox;
+                            strFolderFound = "Y";
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            strLevel = "9";
+            if (strFolderFound == "Y")
+            {
+                Outlook.MailItem themailitem = app.GetNamespace("MAPI").GetItemFromID(strItemEntryID, strItemStoreID);
+                themailitem.Move(fldrsource);
+                strMoved = "Y";
+            }
+
+            return "" + strFolderFound + "|xxx|" + strMoved + "";
+        }
 
     }
 }
